@@ -10,29 +10,29 @@
 (s/check-asserts true)
 
 (def loan
-  {::id uuid?
-   ::amount integer?
-   ::value-date string?})
+  {:id uuid?
+   :amount integer?
+   :value-date string?})
 
 (def loan-meta
-  {::amount {:default 0
+  {:amount {:default 0
              :added (t/date-time 2019 03 03)}})
 
 (def old-event
-  {::id (UUID/randomUUID)
-   ::value-date "2019-07-30"
-   ::created-at (t/date-time 2019 01 01)})
+  {:id (UUID/randomUUID)
+   :value-date "2019-07-30"
+   :created-at (t/date-time 2019 01 01)})
 
 (def new-event
-  {::id (UUID/randomUUID)
-   ::value-date "2019-07-30"
-   ::created-at (t/date-time 2019 04 04)
-   ::amount 1000})
+  {:id (UUID/randomUUID)
+   :value-date "2019-07-30"
+   :created-at (t/date-time 2019 04 04)
+   :amount 1000})
 
 (def invalid-event
-  {::id (UUID/randomUUID)
-   ::value-date "2019-07-30"
-   ::created-at (t/date-time 2019 04 04)})
+  {:id (UUID/randomUUID)
+   :value-date "2019-07-30"
+   :created-at (t/date-time 2019 04 04)})
 
 (defn update-loan-spec
   [instant]
@@ -47,12 +47,12 @@
 (defn validate-loan
   [event]
   (let [new-map (update-loan-spec
-                 (::created-at event))
+                 (:created-at event))
         generated-spec (ds/spec ::loan new-map)]
     (s/valid? generated-spec event)))
 
 (defn -main
   [& args]
-  (println "old event valid: "(validate-loan old-event))
-  (println "new event valid: "(validate-loan new-event))
-  (println "new invalid event valid: "(validate-loan invalid-event)))
+  (println "old event valid: " (validate-loan old-event))
+  (println "new event valid: " (validate-loan new-event))
+  (println "new invalid event valid: " (validate-loan invalid-event)))
