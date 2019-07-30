@@ -12,34 +12,39 @@
 
 (def loan-meta
   {::amount {:default 0
-             :added #inst "2019-07-30T10:03:39.782Z"}})
+             :added (t/date-time 2019 03 03)}})
 
 (def old-event
   {:id (UUID/randomUUID)
    :value-date "2019-07-30"
-   :created-at #inst "2019-07-30T10:03:39.782Z"})
+   :created-at (t/date-time 2019 01 01)})
 
 (def new-event
   {:id (UUID/randomUUID)
    :value-date "2019-07-30"
-   :created-at #inst "2019-07-30T10:03:39.782Z"
+   :created-at (t/date-time 2019 04 04)
    :amount 1000})
 
 (defn update-loan-spec
   [instant]
   (for [k (keys loan)]
     (if (contains? loan-meta k)
-      (when (t/after? (-> loan-meta k :added) instant)
+      (when (t/after? instant (-> loan-meta k :added))
         {k (k loan)})
-      {k (get loan k)})))
-
-(update-loan-spec  #inst "2019-07-30T10:03:39.782Z")
+      {k (k loan)})))
 
 (defn validate-loan
   [event]
-  (let [generated-spec (update-loan-spec (t/now))]
+  (let [new-map (update-loan-spec
+                 (:created-at event))
+        generated-spec (ds/spec
+                        (update-loan-spec
+                         (:created-at event)))]
+    (println " New Map = Spec = " new-map generated-spec)
     (s/valid? generated-spec event)))
 
 (validate-loan old-event)
+;; => true
 
 (validate-loan new-event)
+;; => true
