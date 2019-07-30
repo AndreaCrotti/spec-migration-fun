@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [clojure.java-time "0.3.2"]
                  [metosin/spec-tools "0.10.0"]
-                 [clj-time "0.15.1"]]
+                 [clj-time "0.15.1"]
+                 [expound "0.7.2"]]
   :repl-options {:init-ns spec-migration-fun.core})

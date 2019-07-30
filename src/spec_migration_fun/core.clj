@@ -1,4 +1,5 @@
 (ns spec-migration-fun.core
+  (:gen-class)
   (:require [spec-tools.data-spec :as ds]
             [clj-time.core :as t]
             [clojure.spec.alpha :as s])
@@ -37,14 +38,12 @@
   [event]
   (let [new-map (update-loan-spec
                  (:created-at event))
-        generated-spec (ds/spec
-                        (update-loan-spec
-                         (:created-at event)))]
-    (println " New Map = Spec = " new-map generated-spec)
+        generated-spec (ds/spec ::loan new-map)]
+    (println " New Map = " new-map)
+    (println "New spec = " generated-spec)
     (s/valid? generated-spec event)))
 
-(validate-loan old-event)
-;; => true
-
-(validate-loan new-event)
-;; => true
+(defn -main
+  [& args]
+  (validate-loan old-event)
+  (validate-loan new-event))
